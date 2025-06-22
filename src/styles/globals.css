@@ -1,42 +1,271 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --input-box-height: 40px;
+  --input-box-border-radius: calc(var(--input-box-height) / 2)
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html,
 body {
-  max-width: 100vw;
   overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
+*,
+*::after,
+*::before {
   box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+  font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  text-overflow: clip;
 }
+
+*::placeholder {
+  text-overflow: ellipsis;
+
+}
+
 
 a {
   color: inherit;
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+
+
+datalist {
+  position: absolute;
+  max-height: 20em;
+  border: #dcdcdc 1px solid;
+  overflow-x: hidden;
+  overflow-y: auto;
+  z-index: 99;
+  border-bottom-right-radius: 18.5px;
+  border-bottom-left-radius: 18.5px;
+}
+
+datalist option {
+  font-size: 0.9em;
+  padding: 0.3em 1em;
+  background-color: #ffffff;
+  color: black;
+  cursor: pointer;
+}
+
+ datalist option:hover:not(:disabled)
+{
+  color: #fff;
+  background-color: #036;
+  outline: 0 none;
+}
+datalist option:hover:disabled
+{
+
+  background-color: #bbb;
+
+}
+input:not(:focus)+datalist:not(:active) {
+  visibility: hidden;
+
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  padding: 1.5rem 0.6rem;
+  border: #1142b2 1px solid;
+  border-radius: 50px;
+  max-width: 550px;
+  font-size: 0.88em;
+
+}
+
+
+legend {
+  display: block;
+  width: 100%;
+  border: none;
+  text-align: center;
+  font-size: large;
+  margin: 0 0 1.4rem 0;
+  font-weight: 700;
+  position: relative;
+
+}
+
+fieldset {
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem
+}
+
+
+input {
+  border-radius: var(--input-box-border-radius);
+  outline: none;
+  height: var(--input-box-height);
+  font-size: small;
+  padding: 1rem;
+  border: 1px #dcdcdc solid;
+  width: 100%;
+  transition: ease-in-out 0.2s;
+}
+
+:where(input:not([type="radio"]), select, textarea):hover:not(:disabled, :focus-within) {
+  border-color: #4096ff;
+  border-width: 0.1px;
+  box-shadow: 0 0 1px #4096ff;
+  transition: ease-in-out 0.2s;
+}
+
+:where(input:not([type="radio"]), select, textarea):not(:disabled):focus-within {
+  border-color: #1967d2
+
+}
+
+input[type="radio"] {
+  height: 17px;
+  width: 17px;
+  vertical-align: text-top;
+  display: inline;
+
+}
+
+input::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+label:not(.gender-label) {
+  padding-inline-start: calc(var(--input-box-height) / 4);
+}
+
+label[for="phone"]+div[class^='iti'] {
+  width: 100%;
+  padding: 0;
+
+}
+
+
+label[for="phone"]+div[class^='iti'] button>* {
+  border-radius: 50px;
+}
+
+button[type='submit'] {
+  font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  cursor: pointer;
+
+  font-size: 1.1rem;
+  width: 150px;
+  height: 32px;
+  border-radius: 29px;
+  background-color: #1142b2;
+  color: #ffffff;
+  border: none;
+  align-self: center;
+
+}
+
+/* button[type='submit']:hover::after{
+  content: '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path d="M627.498667 240.469333l241.365333 241.365334a42.666667 42.666667 0 0 1 0 60.330666l-241.365333 241.365334a42.666667 42.666667 0 0 1-60.330667-60.330667l168.533333-168.533333H170.666667a42.666667 42.666667 0 1 1 0-85.333334h565.034666l-168.533333-168.533333a42.666667 42.666667 0 1 1 60.330667-60.330667z"></svg>';
+
+
+} */
+select {
+  transition: ease-in-out 0.2s;
+  outline-color: #929292;
+  min-height: var(--input-box-height);
+  width: 100%;
+  border-color: #d8d8d8;
+  border-radius: var(--input-box-border-radius);
+  padding: 0 0.7rem;
+  vertical-align: middle;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='64 64 896 896' focusable='false' fill='%23989898' data-icon='down' width='1em' height='1em' aria-hidden='true'%3E%3Cpath d='M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 98% 50%;
+  background-size: 12px;
+  background-color: white;
+}
+
+select:disabled {
+  border-color: #d8d8d8 !important;
+  background-color: #e4e4e4;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='64 64 896 896' focusable='false' fill='%23999999' data-icon='down' width='1em' height='1em' aria-hidden='true'%3E%3Cpath d='M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z'/%3E%3C/svg%3E");
+
+}
+
+textarea {
+  border-radius: var(--input-box-border-radius);
+  height: calc(var(--input-box-height) * 2);
+  padding: 0.6em 0.9em;
+  border-color: #dcdcdc;
+  width: 100%;
+  resize: none;
+  outline-color: #929292;
+}
+
+.required::after,
+.required_guide::before {
+  content: '*';
+  color: #1142b2;
+  vertical-align: top;
+  font-size: large;
+  margin-inline-start: 0.29rem;
+}
+
+.required_guide {
+  margin: -0.7rem 0.5rem 0.5rem 1rem;
+  display: inline-block;
+
+}
+
+.reset-button {
+  float: right;
+  cursor: pointer;
+  vertical-align: bottom;
+
+  margin: -0.9rem 1.7rem 0.5rem 1rem;
+  border: none;
+  background-color: transparent;
+  outline-width: 1px;
+  color: gray;
+  text-decoration: underline;
+
+}
+
+.optional::after {
+  content: " (Optional)";
+  color: #929292;
+  font-size: x-small
+}
+
+
+.ant-select-selection-placeholder {
+  color: black !important;
+}
+
+:focus-within>.ant-select-selection-placeholder {
+  visibility: hidden !important;
+}
+
+.input-error:is(:not(:focus), :focus-within) {
+  border-color: #e53935;
+
+}
+
+.input-error:hover {
+  box-shadow: 0 0 1px #e53935;
+  border-color: red;
+
+}
+
+@media (min-width: 48em) {
+  form {
+    font-size: 1em;
   }
 }

@@ -5,9 +5,12 @@ export default function Document() {
     <Html lang="en">
       <Head />
       <body>
-        <Main />
+      <Main />
         <NextScript />
+      <script src="https://cdn.jsdelivr.net/npm/datalist-css/dist/datalist-css.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.2.1/build/js/intlTelInputWithUtils.js"></script>
       </body>
-    </Html>
+
+      </Html>
   );
 }

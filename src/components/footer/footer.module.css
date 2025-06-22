@@ -1,0 +1,8 @@
+.footer{
+    height: 400px;
+    font-size: xx-large;
+    background-color: #dfe2ff;
+    text-transform: uppercase;
+    position: relative;
+    bottom: 0;
+}
