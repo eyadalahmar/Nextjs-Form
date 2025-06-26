@@ -59,7 +59,7 @@
   position: relative;
   margin-bottom: 9rem;
   display: grid;
-  grid-template-columns: 1fr minmax(200, 550px) 1fr;
+  grid-template-columns: 1fr minmax(200px, 550px) 1fr;
 
 
 }
