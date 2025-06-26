@@ -2,7 +2,7 @@
 /*
 * Author: Eyad
 * Created: 2025/03/21 06:06:30
-* Last modified: 2025/06/26 06:29:24
+* Last modified: 2025/06/26 06:48:17
 * Component: RegistrationForm
 */
 
@@ -206,7 +206,7 @@ export default function FormPage() {
           "gender": formData.gender,
           "lang": formData.studyLanguage
         };
-        console.log(data) 
+
         
         try {
           const response = await axios.post('/api/PostAPI', data);
@@ -502,7 +502,7 @@ export default function FormPage() {
                     type="radio"
                     value="Male"
                     checked={formData.gender === "Male"}
-                    onChange={handleFormChanges}
+                    onInput={handleFormChanges}
                   />
                   Male
                 </label>
@@ -512,7 +512,7 @@ export default function FormPage() {
                     type="radio"
                     value="Female"
                     checked={formData.gender === "Female"}
-                    onChange={handleFormChanges}
+                    onInput={handleFormChanges}
                   />
                   Female
                 </label>
