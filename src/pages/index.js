@@ -2,7 +2,7 @@
 /*
 * Author: Eyad
 * Created: 2025/03/21 06:06:30
-* Last modified: 2025/06/26 06:48:17
+* Last modified: 2025/06/26 07:16:16
 * Component: RegistrationForm
 */
 
@@ -502,7 +502,7 @@ export default function FormPage() {
                     type="radio"
                     value="Male"
                     checked={formData.gender === "Male"}
-                    onInput={handleFormChanges}
+                    onChange={handleFormChanges}
                   />
                   Male
                 </label>
@@ -512,7 +512,7 @@ export default function FormPage() {
                     type="radio"
                     value="Female"
                     checked={formData.gender === "Female"}
-                    onInput={handleFormChanges}
+                    onChange={handleFormChanges}
                   />
                   Female
                 </label>
