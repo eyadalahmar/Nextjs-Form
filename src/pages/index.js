@@ -2,7 +2,7 @@
 /*
 * Author: Eyad
 * Created: 2025/03/21 06:06:30
-* Last modified: 2025/06/23 01:26:18
+* Last modified: 2025/06/26 06:29:24
 * Component: RegistrationForm
 */
 
@@ -14,15 +14,25 @@ import Footer from "@components/components/footer/footer";
 import intlTelInput from 'intl-tel-input';
 import "intl-tel-input/build/css/intlTelInput.css"
 import React, { useState, useEffect, useRef, createElement } from "react";
-import { message, Select, Space, ConfigProvider } from 'antd';
-const axios = require('axios');
+import { Select, Space, ConfigProvider } from 'antd';
+import axios from 'axios';
+import "intl-tel-input/styles";
+// // const myHeaders = new Headers();
+// // myHeaders.append("Content-Type", "application/json");
+// // myHeaders.append("X-API-Key", "");
 
-// const myHeaders = new Headers();
-// myHeaders.append("Content-Type", "application/json");
-// myHeaders.append("X-API-Key", "");
+
+// // SOLUTION 1: Use dynamic import to prevent server-side rendering crash.
+// const IntlTelInput = dynamic(() => import('intl-tel-input/reactWithUtils'), {
+//   ssr: false,
+//   // You can even add a loading state while the component is being fetched
+//   loading: () => <input type="tel" disabled placeholder="Loading..." />
+// });
+
+
 
 export default function FormPage() {
-
+  const [IntlTelInput, setIntlTelInput] = useState();
   const [formData, setFormData] = useState({
     fName: '',
     lName: '',
@@ -36,21 +46,22 @@ export default function FormPage() {
     selectedUni: [],
     message: '',
   })
+  
 
   const [initialFormData] = useState({
     ...formData
   })
-
+  
   const [componentData, setComponentData] = useState({
     countriesNameList: {},
     listIsLoaded: false,
     languageIsEnabled: false,
     specialityIsEnabled: false,
     selectedCountry: '',
-
+    
   })
   const countriesCommonName = Object.keys(componentData.countriesNameList).sort()
-
+  
   const [formDataError, setFormDataError] = useState({
     fNameErr: '',
     lNameErr: '',
@@ -62,20 +73,17 @@ export default function FormPage() {
     studyLanguageErr: '',
     selectedSpecialityErr: '',
     selectedUniErr: '',
-
+    
   })
   const [initialFormDataError] = useState({
     ...formDataError
   })
-
+  
   const [serverSideError, setServerSideError] = useState('')
   const [infoSent, setInfoSent] = useState(false)
 
   const formEl = useRef()
   const phInputEl = useRef()
-
-  const iti = useRef()
-
 
   const serverErrorStyle = {
     color: "#e53935",
@@ -88,9 +96,9 @@ export default function FormPage() {
     paddingInline: '1.2rem',
     paddingBlock: '0.5rem',
     borderInlineStart: '5px #e53935 solid'
-
+    
   }
-
+  
   const messageSentStyle = {
     color: "#43a047",
     marginInlineStart: 'inherit',
@@ -103,30 +111,31 @@ export default function FormPage() {
     paddingInline: '1.2rem',
     paddingBlock: '0.5rem',
     borderInlineStart: '5px #43a047 solid'
-
+    
   }
-
+  
   const calcHeight = (value) => {
     let numberOfLineBreaks = (value.match(/\n/g) || []).length;
     // min-height + lines x line-height + padding + border
     let newHeight = 20 + numberOfLineBreaks * 20 + 14 + 4;
     return Math.min(500, Math.max(120, newHeight));
   }
-
+  
   const handleFormChanges = (e) => {
+    
     if (!e.target) {
       setFormData((prev)=>({
         ...prev,
         selectedUni: e
       })
-      )
-      if (formDataError.selectedUniErr !== '')
-        setFormDataError((prev)=>({
-          ...prev,
-          selectedUniErr: '',
+    )
+    if (formDataError.selectedUniErr !== '')
+      setFormDataError((prev)=>({
+    ...prev,
+    selectedUniErr: '',
         })
       )
-
+      
     }
     else {
       const { name, value } = e.target
@@ -135,24 +144,24 @@ export default function FormPage() {
         [name]: value
       })
     )
-
-      if (name != 'message') {
-        if (formDataError[name + "Err"] !== '')
-          setFormDataError((prev)=>({
-            ...prev,
-            [name + "Err"]: '',
-          }))
-      }
-      if (!componentData.languageIsEnabled && name == "selectedDegree") {
+    
+    if (name != 'message') {
+      if (formDataError[name + "Err"] !== '')
+        setFormDataError((prev)=>({
+      ...prev,
+      [name + "Err"]: '',
+    }))
+  }
+  if (!componentData.languageIsEnabled && name == "selectedDegree") {
         document.querySelector("#stlang").removeAttribute('disabled')
         setComponentData((prev)=>({ ...prev,
-           languageIsEnabled: true })
-          )
+          languageIsEnabled: true })
+        )
       } else if (!componentData.specialityIsEnabled && name == "studyLanguage") {
         document.querySelector("#speciality").removeAttribute('disabled')
         setComponentData((prev)=>({ ...prev, specialityIsEnabled: true }))
       }
-
+      
     }
   }
   
@@ -161,16 +170,20 @@ export default function FormPage() {
     
     if(infoSent)
       setInfoSent(false)
+    if(serverSideError)
+      setServerSideError(null)
+    
     const errorEl = document.querySelector('#error-line')
+
     if(errorEl.textContent)
       errorEl.textContent=''
-
+    
     if (JSON.stringify(formData) !== JSON.stringify(initialFormData)) {
       const formErrors = {
         fNameErr: !formData.fName ? 'First name is required' : '',
         lNameErr: !formData.lName ? 'Last name is required' : '',
         countryErr: !formData.country ? 'Country of residence is required' : '',
-        phoneNErr: !formData.phoneN ? 'Phone number is required' : iti.current ? iti.current.isValidNumber() ? '' : 'Please Enter a valid number' : '',
+        phoneNErr: !formData.phoneN ? 'Phone number is required' : phInputEl.current ? phInputEl.current.getInstance().isValidNumber() ? '' : 'Please Enter a valid number' : '',
         emailErr: !formData.email ? 'Email is required' : '',
         genderErr: !formData.gender ? 'Select your gender' : '',
         selectedDegreeErr: !formData.selectedDegree ? 'Degree is required' : '',
@@ -184,7 +197,7 @@ export default function FormPage() {
           "firstName": formData.fName,
           "lastName": formData.lName,
           "email": formData.email,
-          "phoneNumber": iti.current ? iti.current.getNumber() : formData.phoneN,
+          "phoneNumber": phInputEl.current ? phInputEl.current.getInstance().getNumber() : formData.phoneN,
           "password": "StrongP@ss12",
           "confirmPassword": "StrongP@ss12",
           "dateOfBirth": "1990-01-01",
@@ -193,63 +206,63 @@ export default function FormPage() {
           "gender": formData.gender,
           "lang": formData.studyLanguage
         };
-          console.log(data) 
-
+        console.log(data) 
+        
         try {
           const response = await axios.post('/api/PostAPI', data);
           console.log('IT WORKED', response);
           setInfoSent(true)
           resetForm()
-
+          
         } catch (err) {
           setServerSideError((err.message + ' || ' + err.response.data.message) || 'A server error occurred');
-
+          
         }
-
-
+        
+        
         //   let config = {
         //     method: 'post',
         //     maxBodyLength: Infinity,
         //     url: 'https://apiv2.unitededucation.com.tr/api/Auth/register',
         //     headers: { 
-        //       'Accept': 'application/json',
-        //       'Content-Type': 'application/json', 
-        //       'X-API-Key': '',
-        //     },
-        //     data : data
-        //   };
-        //   (async()=>{
-        //  await axios.request(config)
-        //   .then((response) => {
-        //     console.log(JSON.stringify(response.data));
-        //   })
-        //   .catch((error) => {
+          //       'Accept': 'application/json',
+          //       'Content-Type': 'application/json', 
+          //       'X-API-Key': '',
+          //     },
+          //     data : data
+          //   };
+          //   (async()=>{
+            //  await axios.request(config)
+            //   .then((response) => {
+              //     console.log(JSON.stringify(response.data));
+              //   })
+              //   .catch((error) => {
 
         //   });
         // })()
-
+        
         // const requestOptions = {
         //   method: "POST",
         //   headers: myHeaders,
         //   body: data,
         //   redirect: "follow"
         // };
-
+        
         // fetch("https://apiv2.unitededucation.com.tr/api/Auth/register", requestOptions)
         //   .then((response) => response.text())
         //   .then((result) => console.log(result))
         //   .catch((error) => console.error(error));
-
+        
       }
       else {
-
+        
         window.scrollTo({
           top: formEl.current?.getBoundingClientRect().top + document.documentElement.scrollTop - 400 | 800,
           left: 0,
           behavior: "smooth"
           ,
         })
-
+        
       }
     }
     else {
@@ -269,7 +282,7 @@ export default function FormPage() {
     setFormData(initialFormData);
     setFormDataError(initialFormDataError)
     if(componentData.detectedCountry)
-      iti.current?.setCountry(componentData.detectedCountry)
+      phInputEl.current?.getInstance().setCountry(componentData.detectedCountry)
     setComponentData({
       countriesNameList: {},
       listIsLoaded: false,
@@ -277,7 +290,7 @@ export default function FormPage() {
       specialityIsEnabled: false,
       selectedCountry: '',
     })
-
+    
     document.querySelector("#stlang").setAttribute('disabled', null)
     document.querySelector("#stlang > *").setAttribute('selected', null)
     document.querySelector("#speciality").setAttribute('disabled', null)
@@ -285,56 +298,24 @@ export default function FormPage() {
     document.querySelector('#error-line').textContent = ''
   }
   useEffect(() => {
-
-    if (componentData.selectedCountry && iti.current) {
-      try {
-        iti.current.setCountry(componentData.selectedCountry)
-        iti.current.setNumber("")
-      }
-      catch {
-        iti.current.setCountry('us')
-      }
-    }
+  if(componentData.selectedCountry)
+  phInputEl.current?.getInstance().setCountry(componentData.selectedCountry)
+  phInputEl.current?.getInstance().setNumber('')
   }, [componentData.selectedCountry])
 
-
-
+  
+  
   useEffect(() => {
-
-    const input = document.querySelector("#phone");
-
-    input.placeholder = ""
+    import("intl-tel-input/reactWithUtils").then((module) => {
+      setIntlTelInput(() => module.default);
+    });
+  
     try {
-      iti.current = window.intlTelInput(phInputEl.current, {
-        countrySearch: true,
-        customPlaceholder: selectedCountryPlaceholder => selectedCountryPlaceholder,
-
-        excludeCountries: ["il"],
-        geoIpLookup: function (callback) {
-          fetch("https://ipapi.co/json")
-            .then(function (res) { return res.json(); })
-            .then(function (data) { callback(data.country_code); 
-            setComponentData(prev => ({...prev,
-            detectedCountry:data.country_code
-            }))
-            })
-            .catch(function () { callback(); });
-        },
-        initialCountry: 'auto',
-        loadUtils: () => import("intl-tel-input/utils"),
-        placeholderNumberType: "MOBILE",
-        useFullscreenPopup: false,
-      });
-    } catch {
-      input.placeholder = "Type manualy with +country code e.g. +11234567890"
-      console.error('error loading'.toUpperCase() + "intlTelInput!")
-    }
-    try {
-    const countriesName = Object.fromEntries(
+      const countriesName = Object.fromEntries(
       intlTelInput.getCountryData().map(a => [a.name, a.iso2])
     );
-      setComponentData((prev)=>({
-        ...prev,
+    setComponentData((prev)=>({
+      ...prev,
         countriesNameList: countriesName,
         listIsLoaded: true
       }))
@@ -346,14 +327,13 @@ export default function FormPage() {
       }))
 
     }
-
-
+    
   }
     , [])
-
-
-  return (
-    <>
+    
+    
+    return (
+      <>
       <Head>
         <title>Registration form for private universities in Türkiye | United Education</title>
         <meta name="description" content="Generated by create next app" />
@@ -399,7 +379,7 @@ export default function FormPage() {
                 placeholder="e.g. John"
                 value={formData.fName}
                 className={formDataError.fNameErr ? 'input-error' : null}
-                onChange={handleFormChanges} />
+                onInput={handleFormChanges} />
               <span className={styles.error}>{formDataError.fNameErr}</span>
             </section>
 
@@ -415,7 +395,7 @@ export default function FormPage() {
                 placeholder="e.g. Ludosky"
                 value={formData.lName}
                 className={formDataError.lNameErr ? 'input-error' : null}
-                onChange={handleFormChanges} />
+                onInput={handleFormChanges} />
               <span className={styles.error}>{formDataError.lNameErr}</span>
             </section>
             <section>
@@ -459,20 +439,43 @@ export default function FormPage() {
               </datalist>
               <span className={styles.error}>{formDataError.countryErr}</span>
             </section>
+          
             <section>
               <label className="required" htmlFor="phone">Phone number:</label>
-              <input
+          { IntlTelInput&& <IntlTelInput 
                 ref={phInputEl}
-                name="phoneN"
-                id="phone"
-                className={`${styles.phone_in} ${formDataError.phoneNErr ? 'input-error' : null}`}
-                type="tel"
-                value={formData.phoneN}
-                onInput={handleFormChanges}
-              />
+                inputProps={
+                  {
+                    ['name']:'phoneN',
+                    className:`${styles.phone_in} ${formDataError.phoneNErr ? 'input-error' : null}`,
+                    onInput:handleFormChanges,
+                    value:FormData.phoneN,
+                }
+               }
+               initOptions={{
+            countrySearch: true,
+        customPlaceholder: selectedCountryPlaceholder => selectedCountryPlaceholder,
+        
+        excludeCountries: ["il"],
+        geoIpLookup: function (callback) {
+          fetch("https://ipapi.co/json")
+          .then(function (res) { return res.json(); })
+          .then(function (data) { callback(data.country_code); 
+            setComponentData(prev => ({...prev,
+              detectedCountry:data.country_code
+            }))
+          })
+          .catch(function () { callback(); });
+        },
+        initialCountry: 'auto',
+        
+        placeholderNumberType: "MOBILE",
+        useFullscreenPopup: false,
+    }}
+              />}
+              
               <span className={styles.error}>{formDataError.phoneNErr}</span>
             </section>
-
             <section>
               <label className="required" htmlFor="email">Email:</label>
               <input
@@ -640,9 +643,6 @@ export default function FormPage() {
                   },
                   token:{
                     borderRadius:20,
-                    // controlHeight:50
-                    controlPaddingHorizontal:100,
-                    paddingSM:10
                   }
                 }}
               >

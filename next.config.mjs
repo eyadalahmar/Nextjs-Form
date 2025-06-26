@@ -1,9 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  devIndicators: {
-    appIsrStatus: false,
-  },
-};
+  webpack: (config) => {
+    config.resolve.extensionAlias = {
+      '.js': ['.ts', '.tsx', '.js', '.jsx']
+    }
+    return config
+  }
+}
 
-export default nextConfig;
+export default nextConfig
