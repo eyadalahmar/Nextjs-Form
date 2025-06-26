@@ -2,7 +2,7 @@
 /*
 * Author: Eyad
 * Created: 2025/03/21 06:06:30
-* Last modified: 2025/06/26 07:16:16
+* Last modified: 2025/06/26 07:51:28
 * Component: RegistrationForm
 */
 
@@ -21,16 +21,6 @@ import "intl-tel-input/styles";
 // // myHeaders.append("Content-Type", "application/json");
 // // myHeaders.append("X-API-Key", "");
 
-
-// // SOLUTION 1: Use dynamic import to prevent server-side rendering crash.
-// const IntlTelInput = dynamic(() => import('intl-tel-input/reactWithUtils'), {
-//   ssr: false,
-//   // You can even add a loading state while the component is being fetched
-//   loading: () => <input type="tel" disabled placeholder="Loading..." />
-// });
-
-
-
 export default function FormPage() {
   const [IntlTelInput, setIntlTelInput] = useState();
   const [formData, setFormData] = useState({
@@ -46,22 +36,22 @@ export default function FormPage() {
     selectedUni: [],
     message: '',
   })
-  
+
 
   const [initialFormData] = useState({
     ...formData
   })
-  
+
   const [componentData, setComponentData] = useState({
     countriesNameList: {},
     listIsLoaded: false,
     languageIsEnabled: false,
     specialityIsEnabled: false,
     selectedCountry: '',
-    
+
   })
   const countriesCommonName = Object.keys(componentData.countriesNameList).sort()
-  
+
   const [formDataError, setFormDataError] = useState({
     fNameErr: '',
     lNameErr: '',
@@ -73,12 +63,12 @@ export default function FormPage() {
     studyLanguageErr: '',
     selectedSpecialityErr: '',
     selectedUniErr: '',
-    
+
   })
   const [initialFormDataError] = useState({
     ...formDataError
   })
-  
+
   const [serverSideError, setServerSideError] = useState('')
   const [infoSent, setInfoSent] = useState(false)
 
@@ -96,9 +86,9 @@ export default function FormPage() {
     paddingInline: '1.2rem',
     paddingBlock: '0.5rem',
     borderInlineStart: '5px #e53935 solid'
-    
+
   }
-  
+
   const messageSentStyle = {
     color: "#43a047",
     marginInlineStart: 'inherit',
@@ -111,73 +101,75 @@ export default function FormPage() {
     paddingInline: '1.2rem',
     paddingBlock: '0.5rem',
     borderInlineStart: '5px #43a047 solid'
-    
+
   }
-  
+
   const calcHeight = (value) => {
     let numberOfLineBreaks = (value.match(/\n/g) || []).length;
     // min-height + lines x line-height + padding + border
     let newHeight = 20 + numberOfLineBreaks * 20 + 14 + 4;
     return Math.min(500, Math.max(120, newHeight));
   }
-  
+
   const handleFormChanges = (e) => {
-    
+
     if (!e.target) {
-      setFormData((prev)=>({
+      setFormData((prev) => ({
         ...prev,
         selectedUni: e
       })
-    )
-    if (formDataError.selectedUniErr !== '')
-      setFormDataError((prev)=>({
-    ...prev,
-    selectedUniErr: '',
-        })
       )
-      
+      if (formDataError.selectedUniErr !== '')
+        setFormDataError((prev) => ({
+          ...prev,
+          selectedUniErr: '',
+        })
+        )
+
     }
     else {
       const { name, value } = e.target
-      setFormData((prev)=>({
+      setFormData((prev) => ({
         ...prev,
         [name]: value
       })
-    )
-    
-    if (name != 'message') {
-      if (formDataError[name + "Err"] !== '')
-        setFormDataError((prev)=>({
-      ...prev,
-      [name + "Err"]: '',
-    }))
-  }
-  if (!componentData.languageIsEnabled && name == "selectedDegree") {
+      )
+
+      if (name != 'message') {
+        if (formDataError[name + "Err"] !== '')
+          setFormDataError((prev) => ({
+            ...prev,
+            [name + "Err"]: '',
+          }))
+      }
+      if (!componentData.languageIsEnabled && name == "selectedDegree") {
         document.querySelector("#stlang").removeAttribute('disabled')
-        setComponentData((prev)=>({ ...prev,
-          languageIsEnabled: true })
+        setComponentData((prev) => ({
+          ...prev,
+          languageIsEnabled: true
+        })
         )
       } else if (!componentData.specialityIsEnabled && name == "studyLanguage") {
         document.querySelector("#speciality").removeAttribute('disabled')
-        setComponentData((prev)=>({ ...prev, specialityIsEnabled: true }))
+        setComponentData((prev) => ({ ...prev, specialityIsEnabled: true }))
       }
-      
+
     }
   }
-  
+
   const handleFormSubmit = async (e) => {
     e.preventDefault()
-    
-    if(infoSent)
+
+    if (infoSent)
       setInfoSent(false)
-    if(serverSideError)
+    if (serverSideError)
       setServerSideError(null)
-    
+
     const errorEl = document.querySelector('#error-line')
 
-    if(errorEl.textContent)
-      errorEl.textContent=''
-    
+    if (errorEl.textContent)
+      errorEl.textContent = ''
+
     if (JSON.stringify(formData) !== JSON.stringify(initialFormData)) {
       const formErrors = {
         fNameErr: !formData.fName ? 'First name is required' : '',
@@ -201,68 +193,68 @@ export default function FormPage() {
           "password": "StrongP@ss12",
           "confirmPassword": "StrongP@ss12",
           "dateOfBirth": "1990-01-01",
-          "citizenship": componentData.countriesNameList[formData.country]||'n/a',
+          "citizenship": componentData.countriesNameList[formData.country] || 'n/a',
           "countryOfResidence": formData.country,
           "gender": formData.gender,
           "lang": formData.studyLanguage
         };
 
-        
+
         try {
           const response = await axios.post('/api/PostAPI', data);
           console.log('IT WORKED', response);
           setInfoSent(true)
           resetForm()
-          
+
         } catch (err) {
           setServerSideError((err.message + ' || ' + err.response.data.message) || 'A server error occurred');
-          
+
         }
-        
-        
+
+
         //   let config = {
         //     method: 'post',
         //     maxBodyLength: Infinity,
         //     url: 'https://apiv2.unitededucation.com.tr/api/Auth/register',
         //     headers: { 
-          //       'Accept': 'application/json',
-          //       'Content-Type': 'application/json', 
-          //       'X-API-Key': '',
-          //     },
-          //     data : data
-          //   };
-          //   (async()=>{
-            //  await axios.request(config)
-            //   .then((response) => {
-              //     console.log(JSON.stringify(response.data));
-              //   })
-              //   .catch((error) => {
+        //       'Accept': 'application/json',
+        //       'Content-Type': 'application/json', 
+        //       'X-API-Key': '',
+        //     },
+        //     data : data
+        //   };
+        //   (async()=>{
+        //  await axios.request(config)
+        //   .then((response) => {
+        //     console.log(JSON.stringify(response.data));
+        //   })
+        //   .catch((error) => {
 
         //   });
         // })()
-        
+
         // const requestOptions = {
         //   method: "POST",
         //   headers: myHeaders,
         //   body: data,
         //   redirect: "follow"
         // };
-        
+
         // fetch("https://apiv2.unitededucation.com.tr/api/Auth/register", requestOptions)
         //   .then((response) => response.text())
         //   .then((result) => console.log(result))
         //   .catch((error) => console.error(error));
-        
+
       }
       else {
-        
+
         window.scrollTo({
           top: formEl.current?.getBoundingClientRect().top + document.documentElement.scrollTop - 400 | 800,
           left: 0,
           behavior: "smooth"
           ,
         })
-        
+
       }
     }
     else {
@@ -281,7 +273,7 @@ export default function FormPage() {
   const resetForm = () => {
     setFormData(initialFormData);
     setFormDataError(initialFormDataError)
-    if(componentData.detectedCountry)
+    if (componentData.detectedCountry)
       phInputEl.current?.getInstance().setCountry(componentData.detectedCountry)
     setComponentData({
       countriesNameList: {},
@@ -290,7 +282,7 @@ export default function FormPage() {
       specialityIsEnabled: false,
       selectedCountry: '',
     })
-    
+
     document.querySelector("#stlang").setAttribute('disabled', null)
     document.querySelector("#stlang > *").setAttribute('selected', null)
     document.querySelector("#speciality").setAttribute('disabled', null)
@@ -298,42 +290,42 @@ export default function FormPage() {
     document.querySelector('#error-line').textContent = ''
   }
   useEffect(() => {
-  if(componentData.selectedCountry)
-  phInputEl.current?.getInstance().setCountry(componentData.selectedCountry)
-  phInputEl.current?.getInstance().setNumber('')
+    if (componentData.selectedCountry)
+      phInputEl.current?.getInstance().setCountry(componentData.selectedCountry)
+    phInputEl.current?.getInstance().setNumber('')
   }, [componentData.selectedCountry])
 
-  
-  
+
+
   useEffect(() => {
     import("intl-tel-input/reactWithUtils").then((module) => {
       setIntlTelInput(() => module.default);
     });
-  
+
     try {
       const countriesName = Object.fromEntries(
-      intlTelInput.getCountryData().map(a => [a.name, a.iso2])
-    );
-    setComponentData((prev)=>({
-      ...prev,
+        intlTelInput.getCountryData().map(a => [a.name, a.iso2])
+      );
+      setComponentData((prev) => ({
+        ...prev,
         countriesNameList: countriesName,
         listIsLoaded: true
       }))
     }
     catch {
-      setComponentData((prev)=>({
+      setComponentData((prev) => ({
         ...prev,
         countriesNameList: ["(Couldn't load)"],
       }))
 
     }
-    
+
   }
     , [])
-    
-    
-    return (
-      <>
+
+
+  return (
+    <>
       <Head>
         <title>Registration form for private universities in Türkiye | United Education</title>
         <meta name="description" content="Generated by create next app" />
@@ -363,7 +355,7 @@ export default function FormPage() {
         <div id="error-line" style={{
           color: "#e53935",
           margin: "0 0 0 45px",
-          
+
         }}></div>
         <Form ref={formEl} onSubmit={handleFormSubmit}>
           <fieldset>
@@ -418,12 +410,12 @@ export default function FormPage() {
                     countriesCommonName.map((a, b) =>
                       <option key={b} value={a}
                         onClick={() => {
-                          setComponentData((prev)=>(
+                          setComponentData((prev) => (
                             {
                               ...prev,
                               selectedCountry: componentData.countriesNameList[a]
                             }))
-                          setFormData((prev)=>({
+                          setFormData((prev) => ({
                             ...prev,
                             country: a
                           }))
@@ -439,41 +431,51 @@ export default function FormPage() {
               </datalist>
               <span className={styles.error}>{formDataError.countryErr}</span>
             </section>
-          
+
             <section>
               <label className="required" htmlFor="phone">Phone number:</label>
-          { IntlTelInput&& <IntlTelInput 
+              {IntlTelInput ? <IntlTelInput
                 ref={phInputEl}
                 inputProps={
                   {
-                    ['name']:'phoneN',
-                    className:`${styles.phone_in} ${formDataError.phoneNErr ? 'input-error' : null}`,
-                    onInput:handleFormChanges,
-                    value:FormData.phoneN,
+                    ['name']: 'phoneN',
+                    className: `${styles.phone_in} ${formDataError.phoneNErr ? 'input-error' : null}`,
+                    onInput: handleFormChanges,
+                    value: FormData.phoneN,
+                  }
                 }
-               }
-               initOptions={{
-            countrySearch: true,
-        customPlaceholder: selectedCountryPlaceholder => selectedCountryPlaceholder,
-        
-        excludeCountries: ["il"],
-        geoIpLookup: function (callback) {
-          fetch("https://ipapi.co/json")
-          .then(function (res) { return res.json(); })
-          .then(function (data) { callback(data.country_code); 
-            setComponentData(prev => ({...prev,
-              detectedCountry:data.country_code
-            }))
-          })
-          .catch(function () { callback(); });
-        },
-        initialCountry: 'auto',
-        
-        placeholderNumberType: "MOBILE",
-        useFullscreenPopup: false,
-    }}
-              />}
-              
+                initOptions={{
+                  countrySearch: true,
+                  customPlaceholder: selectedCountryPlaceholder => selectedCountryPlaceholder,
+
+                  excludeCountries: ["il"],
+                  geoIpLookup: function (callback) {
+                    fetch("https://ipapi.co/json")
+                      .then(function (res) { return res.json(); })
+                      .then(function (data) {
+                        callback(data.country_code);
+                        setComponentData(prev => ({
+                          ...prev,
+                          detectedCountry: data.country_code
+                        }))
+                      })
+                      .catch(function () { callback(); });
+                  },
+                  initialCountry: 'auto',
+
+                  placeholderNumberType: "MOBILE",
+                  useFullscreenPopup: false,
+                }}
+              /> :
+                <input
+                  placeholder="Type manualy with +country code e.g. +11234567890"
+                  name='phoneN'
+                  className={`${styles.phone_in} ${formDataError.phoneNErr ? 'input-error' : null}`}
+                  onInput={handleFormChanges}
+                  value={FormData.phoneN}
+                />
+              }
+
               <span className={styles.error}>{formDataError.phoneNErr}</span>
             </section>
             <section>
@@ -637,12 +639,12 @@ export default function FormPage() {
                     Select: {
                       activeBorderColor: "#1967d2",
                       fontSize: 12.9,
-                     
-                      multipleItemHeight:32
+
+                      multipleItemHeight: 32
                     },
                   },
-                  token:{
-                    borderRadius:20,
+                  token: {
+                    borderRadius: 20,
                   }
                 }}
               >

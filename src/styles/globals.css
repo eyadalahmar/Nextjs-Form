@@ -53,18 +53,18 @@ datalist option {
   cursor: pointer;
 }
 
- datalist option:hover:not(:disabled)
-{
+datalist option:hover:not(:disabled) {
   color: #fff;
   background-color: #036;
   outline: 0 none;
 }
-datalist option:hover:disabled
-{
+
+datalist option:hover:disabled {
 
   background-color: #bbb;
 
 }
+
 input:not(:focus)+datalist:not(:active) {
   visibility: hidden;
 
@@ -123,7 +123,6 @@ input {
 
 :where(input:not([type="radio"]), select, textarea):not(:disabled):focus-within {
   border-color: #1967d2
-
 }
 
 input[type="radio"] {
