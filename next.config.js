@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    esmExternals: 'loose',
-  },
   transpilePackages: ['rc-util', 'rc-pagination', 'rc-picker', 'rc-tree', 'rc-table'],
   webpack: (config, { isServer }) => {
     if (!isServer) {
