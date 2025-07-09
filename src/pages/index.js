@@ -2,7 +2,7 @@
 /*
 * Author: Eyad
 * Created: 2025/03/21 06:06:30
-* Last modified: 2025/06/26 07:51:28
+* Last modified: 2025/07/10 00:41:37
 * Component: RegistrationForm
 */
 
@@ -129,6 +129,15 @@ export default function FormPage() {
     }
     else {
       const { name, value } = e.target
+     
+      if((name==='fName'||name==='lName')&&value&&!/^[a-z ,.'-]+$/i.test(value)){
+      setFormDataError((prev) => ({
+            ...prev,
+            [name + "Err"]: 'Please type English alphabet characters only (, - . \' are allowed)',
+          }))
+        return ;
+      }
+
       setFormData((prev) => ({
         ...prev,
         [name]: value
@@ -207,8 +216,8 @@ export default function FormPage() {
           resetForm()
 
         } catch (err) {
-          setServerSideError((err.message + ' || ' + err.response.data.message) || 'A server error occurred');
-
+          // setServerSideError((err.message + ' || ' + err.response.data.message) || 'A server error occurred');
+console.log(err)
         }
 
 

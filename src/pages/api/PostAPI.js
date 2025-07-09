@@ -18,12 +18,8 @@ export default async function handler(req, res) {
       const response = await axios.request(config);
       res.status(response.status).json(response.data);
     } catch (error) {
-      console.error('API call error:', error);
-      console.error('API call error message:', error.message);
-  
       res.status(error.response?.status || 500).json(
-        error.response?.data || 
-        { message: 'Internal Server Error' }
+        error
       );
     }
   } else {
