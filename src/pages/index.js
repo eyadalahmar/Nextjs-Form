@@ -2,7 +2,7 @@
 /*
 * Author: Eyad
 * Created: 2025/03/21 06:06:30
-* Last modified: 2025/07/18 23:24:17
+* Last modified: 2025/07/18 23:58:48
 * Component: RegistrationForm
 */
 
@@ -210,15 +210,29 @@ export default function FormPage() {
         };
 
 
+        const sendButton= document.querySelector('[type=submit]')
         try {
+         sendButton.innerText='Sending...'
+         sendButton.classList.add('sending')
+
+         sendButton.setAttribute('disabled',null)
           const response = await axios.post('/api/PostAPI', data);
           console.log('IT WORKED', response);
           setInfoSent(true)
           resetForm()
 
         } catch (err) {
-          setServerSideError((err.message + ' || ' + err.response.data.message) || 'A server error occurred');
+          console.log(err)
+          setServerSideError((err.message + (err.response.data.message!==err.message? ' || ' + err.response.data.message:'')) || 'A server error occurred');
         }
+        finally{
+          sendButton.innerText='Send now'
+          sendButton.classList.remove('sending')
+
+         sendButton.removeAttribute('disabled')
+
+        }
+
 
 
         //   let config = {
@@ -793,8 +807,8 @@ export default function FormPage() {
           }}>Server error:</h2>
           <p>[ {serverSideError} ]</p>
           If the problem is not from your side, please wait for a while,
-          or report the problem to us!
-          <a href={`mailto:info@unitededucation.com.tr?subject=SERVER%20ERROR%20REPORT&body=Hello%2C%0AI%20got%20this%20error%20from%20the%20server%20while%20attempting%20to%20submit%20my%20information%20at%20unitededucation.com%2Fen%2Fpreregister%20%3A%0A%0A${encodeURI(serverSideError)}`}>
+          or report the problem to us! <br />
+  <a href={`mailto:info@unitededucation.com.tr?subject=SERVER%20ERROR%20REPORT&body=Hello%2C%0AI%20got%20this%20error%20from%20the%20server%20while%20attempting%20to%20submit%20my%20information%20at%20unitededucation.com%2Fen%2Fpreregister%20%3A%0A%0A${encodeURI(serverSideError)}`}>
             info@unitededucation.com.tr
           </a>
         </div>

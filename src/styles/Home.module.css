@@ -135,7 +135,6 @@
   margin-inline: 0.8rem;
 display: block;
   height: min-content;
-  /* width: min-content; */
 }
 
 @media (min-width: 48em) {
