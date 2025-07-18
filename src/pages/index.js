@@ -2,7 +2,7 @@
 /*
 * Author: Eyad
 * Created: 2025/03/21 06:06:30
-* Last modified: 2025/07/10 00:41:37
+* Last modified: 2025/07/18 23:24:17
 * Component: RegistrationForm
 */
 
@@ -32,7 +32,7 @@ export default function FormPage() {
     gender: '',
     selectedDegree: '',
     studyLanguage: '',
-    selectedSpeciality: '',
+    selectedSpecialty: '',
     selectedUni: [],
     message: '',
   })
@@ -46,7 +46,7 @@ export default function FormPage() {
     countriesNameList: {},
     listIsLoaded: false,
     languageIsEnabled: false,
-    specialityIsEnabled: false,
+    specialtyIsEnabled: false,
     selectedCountry: '',
 
   })
@@ -61,7 +61,7 @@ export default function FormPage() {
     genderErr: '',
     selectedDegreeErr: '',
     studyLanguageErr: '',
-    selectedSpecialityErr: '',
+    selectedSpecialtyErr: '',
     selectedUniErr: '',
 
   })
@@ -158,9 +158,9 @@ export default function FormPage() {
           languageIsEnabled: true
         })
         )
-      } else if (!componentData.specialityIsEnabled && name == "studyLanguage") {
-        document.querySelector("#speciality").removeAttribute('disabled')
-        setComponentData((prev) => ({ ...prev, specialityIsEnabled: true }))
+      } else if (!componentData.specialtyIsEnabled && name == "studyLanguage") {
+        document.querySelector("#specialty").removeAttribute('disabled')
+        setComponentData((prev) => ({ ...prev, specialtyIsEnabled: true }))
       }
 
     }
@@ -188,8 +188,8 @@ export default function FormPage() {
         emailErr: !formData.email ? 'Email is required' : '',
         genderErr: !formData.gender ? 'Select your gender' : '',
         selectedDegreeErr: !formData.selectedDegree ? 'Degree is required' : '',
-        studyLanguageErr: !formData.studyLanguage ? 'Study langauage is required' : '',
-        selectedSpecialityErr: !formData.selectedSpeciality ? 'Needed specialty is required' : '',
+        studyLanguageErr: !formData.studyLanguage ? 'Study language is required' : '',
+        selectedSpecialtyErr: !formData.selectedSpecialty ? 'Needed specialty is required' : '',
         selectedUniErr: formData.selectedUni.length == 0 ? 'Universities list is required' : '',
       }
       setFormDataError(formErrors)
@@ -216,8 +216,7 @@ export default function FormPage() {
           resetForm()
 
         } catch (err) {
-          // setServerSideError((err.message + ' || ' + err.response.data.message) || 'A server error occurred');
-console.log(err)
+          setServerSideError((err.message + ' || ' + err.response.data.message) || 'A server error occurred');
         }
 
 
@@ -288,14 +287,14 @@ console.log(err)
       countriesNameList: {},
       listIsLoaded: false,
       languageIsEnabled: false,
-      specialityIsEnabled: false,
+      specialtyIsEnabled: false,
       selectedCountry: '',
     })
 
     document.querySelector("#stlang").setAttribute('disabled', null)
     document.querySelector("#stlang > *").setAttribute('selected', null)
-    document.querySelector("#speciality").setAttribute('disabled', null)
-    document.querySelector("#speciality > *").setAttribute('selected', null)
+    document.querySelector("#specialty").setAttribute('disabled', null)
+    document.querySelector("#specialty > *").setAttribute('selected', null)
     document.querySelector('#error-line').textContent = ''
   }
   useEffect(() => {
@@ -351,7 +350,7 @@ console.log(err)
         <article className={styles.article}>
           <h2>Article</h2>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            sed do eiusmod tempos incididunt ut labore et dolore magna aliqua.
             Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
             nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in '
             reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
@@ -371,7 +370,7 @@ console.log(err)
             <legend>Personal information</legend>
             <section>
 
-              <label className="required" htmlFor="firstname">First name:</label>
+              <label className="required" htmlFor="fname">First name:</label>
               <input
                 id="fname"
                 name="fName"
@@ -386,9 +385,8 @@ console.log(err)
 
             <section>
 
-              <label className="required" htmlFor="lastname">Last name:</label>
+              <label className="required" htmlFor="lname">Last name:</label>
               <input
-
                 id="lname"
                 name="lName"
                 autoComplete="family-name"
@@ -446,7 +444,7 @@ console.log(err)
               {IntlTelInput ? <IntlTelInput
                 ref={phInputEl}
                 inputProps={
-                  {
+                  { id:'phone',
                     ['name']: 'phoneN',
                     className: `${styles.phone_in} ${formDataError.phoneNErr ? 'input-error' : null}`,
                     onInput: handleFormChanges,
@@ -477,8 +475,9 @@ console.log(err)
                 }}
               /> :
                 <input
-                  placeholder="Type manualy with +country code e.g. +11234567890"
+                  placeholder="Type manually with +country code e.g. +11234567890"
                   name='phoneN'
+                  id='phone'
                   className={`${styles.phone_in} ${formDataError.phoneNErr ? 'input-error' : null}`}
                   onInput={handleFormChanges}
                   value={FormData.phoneN}
@@ -502,13 +501,14 @@ console.log(err)
             </section>
 
             <section>
-              <label className="required" htmlFor="gender">Gender:</label>
+              <label className="required">Gender:</label>
               <div className={styles.gender_box}
                 style={formDataError.genderErr ? { borderColor: '#e53935' } : {}}
               >
 
-                <label className="gender-label">
+                <label className="gender-label" htmlFor="male">
                   <input
+                  id='male'
                     name="gender"
                     type="radio"
                     value="Male"
@@ -517,8 +517,9 @@ console.log(err)
                   />
                   Male
                 </label>
-                <label className="gender-label">
+                <label className="gender-label" htmlFor="female">
                   <input
+                  id="female"
                     name="gender"
                     type="radio"
                     value="Female"
@@ -535,10 +536,11 @@ console.log(err)
 
             <section>
               <legend>Specialization and university information</legend>
-              <label className="required" htmlFor="select degree">
+              <label className="required" htmlFor="degree">
                 Select the degree you want:
               </label>
               <select
+              id='degree'
                 name="selectedDegree"
                 value={formData.selectedDegree}
                 onChange={handleFormChanges}
@@ -558,7 +560,7 @@ console.log(err)
             </section>
             <section>
 
-              <label className="required" htmlFor="select language">
+              <label className="required" htmlFor="stlang">
                 Select the study language you prefer:
               </label>
               <select name="studyLanguage"
@@ -587,11 +589,11 @@ console.log(err)
 
             <section>
 
-              <label className="required" htmlFor="Select speciality">Select the specialty that suits you:</label>
-              <select name="selectedSpeciality" id="speciality" value={formData.selectedSpeciality}
+              <label className="required" htmlFor="specialty">Select the specialty that suits you:</label>
+              <select name="selectedSpecialty" id="specialty" value={formData.selectedSpecialty}
                 onChange={handleFormChanges}
                 disabled
-                className={formDataError.selectedSpecialityErr ? 'input-error' : null}
+                className={formDataError.selectedSpecialtyErr ? 'input-error' : null}
               >
                 <option value='' selected disabled>
                   {formData.selectedDegree ? formData.studyLanguage ? "--Select one--" : "(Select a study language first)" : "(Select a degree & language first)"}
@@ -637,11 +639,11 @@ console.log(err)
                 </>
                 )}
               </select>
-              <span className={styles.error}>{formDataError.selectedSpecialityErr}</span>
+              <span className={styles.error}>{formDataError.selectedSpecialtyErr}</span>
             </section>
 
             <section>
-              <label className="required" htmlFor="select universities">Select universities you want to apply to:</label>
+              <label className="required" htmlFor="uni">Select universities you want to apply to:</label>
               <ConfigProvider
                 theme={{
                   components: {
@@ -668,6 +670,7 @@ console.log(err)
 
                 >
                   <Select
+                  id='uni'
                     status={formDataError.selectedUniErr ? 'error' : ''}
                     name="selectedUni"
                     mode="multiple"
@@ -748,8 +751,9 @@ console.log(err)
             </section>
             <section>
 
-              <label className="optional" htmlFor="message text">Message:</label>
+              <label className="optional" htmlFor="message">Message:</label>
               <textarea
+              id="message"
                 name="message"
                 value={formData.message}
                 onChange={handleFormChanges}
@@ -789,7 +793,7 @@ console.log(err)
           <p>[ {serverSideError} ]</p>
           If the problem is not from your side, please wait for a while,
           or report the problem to us!
-          <a href={`mailto:info@unitededucation.com.tr?subject=SERVER%20ERROR%20REPORT&body=Hello%2C%0AI%20got%20this%20error%20from%20the%20server%20while%20attemping%20to%20submit%20my%20information%20at%20unitededucation.com%2Fen%2Fpreregister%20%3A%0A%0A${encodeURI(serverSideError)}`}>
+          <a href={`mailto:info@unitededucation.com.tr?subject=SERVER%20ERROR%20REPORT&body=Hello%2C%0AI%20got%20this%20error%20from%20the%20server%20while%20attempting%20to%20submit%20my%20information%20at%20unitededucation.com%2Fen%2Fpreregister%20%3A%0A%0A${encodeURI(serverSideError)}`}>
             info@unitededucation.com.tr
           </a>
         </div>
@@ -801,7 +805,7 @@ console.log(err)
             fontSize: "1.4em",
             color: '#199515'
           }}>Information sent!</h2>
-          One of our team will review your inquery and reach out to you soon.</div>
+          One of our team will review your inquiry and reach out to you soon.</div>
       </div>
       <Footer />
     </>
