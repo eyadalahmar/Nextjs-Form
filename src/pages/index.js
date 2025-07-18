@@ -6,6 +6,7 @@
 * Component: RegistrationForm
 */
 
+
 import Head from "next/head";
 import Form from 'next/form'
 import styles from "@components/styles/Home.module.css";
